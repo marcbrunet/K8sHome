@@ -1,0 +1,13 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: influxdb-data-pv
+  namespace: influxdb
+  annotations:
+#    volume.beta.kubernetes.io/storage-class: "nfs-master-ssd"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 30Gi

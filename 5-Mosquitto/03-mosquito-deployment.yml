@@ -1,0 +1,39 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: mosquito
+  namespace: openhab
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mosquito
+    spec:
+      containers:
+      - name: mosquito
+        image: arm32v6/eclipse-mosquitto:1.6
+        resources:
+          requests:
+            memory: "20Mi"
+            cpu: "100m"
+        ports:
+        - containerPort: 9001
+        - containerPort: 1883
+        volumeMounts:
+        - name: mosquitto-config
+          mountPath: /mosquitto/config
+          readOnly: true
+        - name:  mosquito-db
+          mountPath: /nfs/
+          readOnly: false
+      volumes:
+      - name: mosquitto-config
+        configMap:
+          name: mosquito-configmap
+          items:
+            - key: mosquitto.conf
+              path: mosquitto.conf
+      - name: mosquito-db
+        persistentVolumeClaim:
+          claimName: mosquito-db-pv

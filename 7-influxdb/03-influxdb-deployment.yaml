@@ -1,0 +1,51 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: influxdb
+  namespace: influxdb
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: influxdb
+    spec:
+      containers:
+      - name: influxdb-creds
+        image: docker.io/influxdb:1.7.6
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "500Mi"
+            cpu: "1000m"
+        ports:
+        - containerPort: 8086
+          name: api
+          protocol: TCP
+        - containerPort: 8083
+          name: administrator
+          protocol: TCP
+        - containerPort: 2003
+          name: graphite
+          protocol: TCP
+        env:
+        - name: INFLUXDB_ADMIN_ENABLED
+          value: "true"
+        - name: INFLUXDB_ADMIN_USER
+          value: "admin"
+        - name: INFLUXDB_ADMIN_PASSWORD
+          value: "admin"
+        - name: INFLUXDB_DB
+          value: "openhab_db"
+        - name: INFLUXDB_USER
+          value: "openhab"
+        - name: INFLUXDB_USER_PASSWORD
+          value: "openhab"
+        volumeMounts:
+        - name: influxdb-data
+          mountPath: /var/lib/influxdb
+          readOnly: false
+      volumes:
+      - name: influxdb-data
+        persistentVolumeClaim:
+          claimName: influxdb-data-pv

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mosquitto
+  namespace: openhab
+spec:
+  selector:
+    app: mosquito
+  ports:
+    - protocol: TCP
+      port: 9001
+      name: openhab-http
+    - protocol: TCP
+      port: 1883
+      name: openhab-https
+  type: LoadBalancer

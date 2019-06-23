@@ -1,0 +1,22 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: mosquito-configmap
+  namespace: openhab
+data:
+  mosquitto.conf: |
+    autosave_interval 100
+    persistence true
+    persistence_file m2.db
+    persistence_location /nfs/
+    connection_messages true
+    log_timestamp true
+    listener 1883
+    listener 1884 127.0.0.1
+    protocol websockets
+    allow_duplicate_messages false
+    max_connections -1
+    max_inflight_messages 50
+    max_queued_messages 1000
+    persistent_client_expiration 3m
+    sys_interval 1

@@ -1,0 +1,69 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: openhab-conf-pv
+  namespace: openhab
+  annotations:
+#    volume.beta.kubernetes.io/storage-class: "nfs-master-ssd"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: openhab-addons-pv
+  namespace: openhab
+  annotations:
+#    volume.beta.kubernetes.io/storage-class: "nfs-master-ssd"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: openhab-java-pv
+  namespace: openhab
+  annotations:
+#    volume.beta.kubernetes.io/storage-class: "nfs-master-ssd"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: openhab-karaf-pv
+  namespace: openhab
+  annotations:
+#    volume.beta.kubernetes.io/storage-class: "nfs-master-ssd"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: openhab-userdata-pv
+  namespace: openhab
+  annotations:
+#    volume.beta.kubernetes.io/storage-class: "nfs-master-ssd"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi

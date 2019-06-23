@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: openhab-service
+  namespace: openhab
+spec:
+  type: LoadBalancer
+  selector:
+    app: openhab
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: http
+      name: openhab-http
+    - protocol: TCP
+      port: 8443
+      targetPort: https
+      name: openhab-https
+    - protocol: TCP
+      port: 8101
+      targetPort: console
+      name: openhab-console
