@@ -38,48 +38,28 @@ data:
     # default named port `https`. This works for single API server deployments as
     # well as HA API server deployments.
     scrape_configs:
-    - job_name: 'kubernetes-apiservers'
-
-      kubernetes_sd_configs:
-      - role: endpoints
-
-      # Default to scraping over https. If required, just disable this or change to
-      # `http`.
+     - job_name: 'kubernetes-apiservers'
+      scrape_interval: 10s
+      scrape_timeout: 10s
+      metrics_path: /metrics
       scheme: https
-
-      # This TLS & bearer token file config is used to connect to the actual scrape
-      # endpoints for cluster components. This is separate to discovery auth
-      # configuration because discovery & scraping are two separate concerns in
-      # Prometheus. The discovery auth config is automatic if Prometheus runs inside
-      # the cluster. Otherwise, more config options have to be provided within the
-      # <kubernetes_sd_config>.
+      kubernetes_sd_configs:
+      - api_server: null
+        role: endpoints
+        namespaces:
+          names: []
+      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
       tls_config:
         ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-        # If your node certificates are self-signed or use a different CA to the
-        # master CA, then disable certificate verification below. Note that
-        # certificate verification is an integral part of a secure infrastructure
-        # so this should only be disabled in a controlled environment. You can
-        # disable certificate verification by uncommenting the line below.
-        #
-        # insecure_skip_verify: true
-      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-
-      # Keep only the default/kubernetes service endpoints for the https port. This
-      # will add targets for each API server which Kubernetes adds an endpoint to
-      # the default/kubernetes service.
+        insecure_skip_verify: true
       relabel_configs:
       - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
-        action: keep
+        separator: ;
         regex: default;kubernetes;https
-
-    # Scrape config for nodes (kubelet).
-    #
-    # Rather than connecting directly to the node, the scrape is proxied though the
-    # Kubernetes apiserver.  This means it will work if Prometheus is running out of
-    # cluster, or can't connect to nodes for some other reason (e.g. because of
-    # firewalling).
+        replacement: $1
+        action: keep
+        
     - job_name: 'kubernetes-nodes'
-
       # Default to scraping over https. If required, just disable this or change to
       # `http`.
       scheme: https
@@ -121,6 +101,7 @@ data:
     #
     # This job is not necessary and should be removed in Kubernetes 1.6 and
     # earlier versions, or it will cause the metrics to be scraped twice.
+    
     - job_name: 'kubernetes-cadvisor'
 
       # Default to scraping over https. If required, just disable this or change to
@@ -161,6 +142,7 @@ data:
     # * `prometheus.io/path`: If the metrics path is not `/metrics` override this.
     # * `prometheus.io/port`: If the metrics are exposed on a different port to the
     # service then set this appropriately.
+    
     - job_name: 'kubernetes-service-endpoints'
 
       kubernetes_sd_configs:
