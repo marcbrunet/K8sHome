@@ -25,7 +25,7 @@ spec:
             - name: NFS_SERVER
               value: 10.0.1.1
             - name: NFS_PATH
-              value: :/opt/nfs
+              value: /opt/nfs
       volumes:
         - name: nfs-client-root
           nfs:

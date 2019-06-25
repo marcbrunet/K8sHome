@@ -46,6 +46,11 @@ spec:
         - name: openhab-karaf
           mountPath: /openhab/.karaf
           readOnly: false
+        env:
+          - name: USER_ID
+            value: "1000"
+          - name: GROUP_ID
+            value: "1000"
       volumes:
       - name: openhab-conf
         persistentVolumeClaim:
