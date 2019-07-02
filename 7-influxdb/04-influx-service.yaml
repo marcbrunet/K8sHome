@@ -13,4 +13,4 @@ spec:
     - protocol: TCP
       port: 8083
       name: openhab-https
-  type: LoadBalancer
+  type: NodePort

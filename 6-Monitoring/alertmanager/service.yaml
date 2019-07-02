@@ -11,7 +11,7 @@ metadata:
 spec:
   selector:
     app: alertmanager
-  type: LoadBalancer
+  type: NodePort
   ports:
   - name: alertmanager
     protocol: TCP

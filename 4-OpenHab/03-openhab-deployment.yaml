@@ -17,6 +17,11 @@ spec:
           requests:
             memory: "200Mi"
             cpu: "100m"
+        env:
+          - name: USER_ID
+            value: "1000"
+          - name: GROUP_ID
+            value: "1000"
         ports:
         - containerPort: 8080
           name: http

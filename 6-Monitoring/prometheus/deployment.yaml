@@ -18,7 +18,7 @@ spec:
       serviceAccountName: prometheus-k8s
       containers:
       - name: prometheus
-        image: napnap75/rpi-prometheus:prometheus-2.8.0
+        image: napnap75/rpi-prometheus:prometheus-2.1.0
         args:
           - '--storage.tsdb.retention=10d'
           - '--config.file=/etc/prometheus/prometheus.yaml'
@@ -28,15 +28,16 @@ spec:
         resources:
           requests:
             cpu: 500m
-            memory: 300Mi
+            memory: 512Mi
+          limits:
+            cpu: 1000m
+            memory: 1024Mi
         volumeMounts:
         - name: config-volume
           mountPath: /etc/prometheus
         - name: rules-volume
           mountPath: /etc/prometheus-rules
-        - name: prometheus-data
-          mountPath: /prometheus/data
-          readOnly: false
+
       volumes:
       - name: config-volume
         configMap:
@@ -44,6 +45,3 @@ spec:
       - name: rules-volume
         configMap:
           name: prometheus-rules
-      - name: prometheus-data
-        persistentVolumeClaim:
-          claimName: prometheus-data-pv

@@ -15,7 +15,7 @@ spec:
         image: arm32v6/eclipse-mosquitto:1.6
         resources:
           requests:
-            memory: "20Mi"
+            memory: "100Mi"
             cpu: "100m"
         ports:
         - containerPort: 9001
