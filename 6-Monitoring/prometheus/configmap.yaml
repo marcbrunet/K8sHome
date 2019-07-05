@@ -6,16 +6,24 @@ metadata:
   namespace: monitoring
 data:
   prometheus.yaml: |
+    apiVersion: v1
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: prometheus-core
+  namespace: monitoring
+data:
+  prometheus.yaml: |
     global:
-      scrape_interval: 10s
-      scrape_timeout: 10s
-      evaluation_interval: 10s
+      scrape_interval: 30s
+      scrape_timeout: 30s
+      evaluation_interval: 30s
       # Remote write configuration (for Graphite, OpenTSDB, or InfluxDB).
-    remote_write:
-      - url: "http://influxdb.influxdb:8086/api/v1/prom/write?u=prometheus&p=prometheus&db=prometheus"
+    #remote_write:
+    #  - url: "http://influxdb.influxdb:8086/api/v1/prom/write?u=prometheus&p=prometheus&db=prometheus"
     # Remote read configuration (for InfluxDB only at the moment).
-    remote_read:
-      - url: "http://influxdb.influxdb:8086/api/v1/prom/read?u=prometheus&p=prometheus&db=prometheus"
+    #remote_read:
+    #  - url: "http://influxdb.influxdb:8086/api/v1/prom/read?u=prometheus&p=prometheus&db=prometheus"
     rule_files:
       - "cpu-usage.rules"
       - "instance-availability.rules"
@@ -28,14 +36,11 @@ data:
           - alertmanager:9093
     scrape_configs:
     - job_name: 'kubernetes-apiservers'
-
       kubernetes_sd_configs:
       - role: endpoints
-
       # Default to scraping over https. If required, just disable this or change to
       # `http`.
       scheme: https
-
       # This TLS & bearer token file config is used to connect to the actual scrape
       # endpoints for cluster components. This is separate to discovery auth
       # configuration because discovery & scraping are two separate concerns in
@@ -52,7 +57,6 @@ data:
         #
         # insecure_skip_verify: true
       bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-
       # Keep only the default/kubernetes service endpoints for the https port. This
       # will add targets for each API server which Kubernetes adds an endpoint to
       # the default/kubernetes service.
@@ -61,11 +65,9 @@ data:
         action: keep
         regex: default;kubernetes;https
     - job_name: 'kubernetes-nodes'
-
       # Default to scraping over https. If required, just disable this or change to
       # `http`.
       scheme: https
-
       # This TLS & bearer token file config is used to connect to the actual scrape
       # endpoints for cluster components. This is separate to discovery auth
       # configuration because discovery & scraping are two separate concerns in
@@ -75,10 +77,8 @@ data:
       tls_config:
         ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
       bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-
       kubernetes_sd_configs:
       - role: node
-
       relabel_configs:
       - action: labelmap
         regex: __meta_kubernetes_node_label_(.+)
@@ -89,11 +89,9 @@ data:
         target_label: __metrics_path__
         replacement: /api/v1/nodes/${1}/proxy/metrics
     - job_name: 'kubernetes-cadvisor'
-
       # Default to scraping over https. If required, just disable this or change to
       # `http`.
       scheme: https
-
       # This TLS & bearer token file config is used to connect to the actual scrape
       # endpoints for cluster components. This is separate to discovery auth
       # configuration because discovery & scraping are two separate concerns in
@@ -103,10 +101,8 @@ data:
       tls_config:
         ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
       bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-
       kubernetes_sd_configs:
       - role: node
-
       relabel_configs:
       - action: labelmap
         regex: __meta_kubernetes_node_label_(.+)
@@ -117,10 +113,8 @@ data:
         target_label: __metrics_path__
         replacement: /api/v1/nodes/${1}/proxy/metrics/cadvisor
     - job_name: 'kubernetes-service-endpoints'
-
       kubernetes_sd_configs:
       - role: endpoints
-
       relabel_configs:
       - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
         action: keep
@@ -149,14 +143,11 @@ data:
       - source_labels: [__meta_kubernetes_pod_node_name]
         target_label: instance
     - job_name: 'kubernetes-services'
-
       metrics_path: /probe
       params:
         module: [http_2xx]
-
       kubernetes_sd_configs:
       - role: service
-
       relabel_configs:
       - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_probe]
         action: keep
@@ -174,14 +165,11 @@ data:
       - source_labels: [__meta_kubernetes_service_name]
         target_label: kubernetes_name
     - job_name: 'kubernetes-ingresses'
-
       metrics_path: /probe
       params:
         module: [http_2xx]
-
       kubernetes_sd_configs:
         - role: ingress
-
       relabel_configs:
         - source_labels: [__meta_kubernetes_ingress_annotation_prometheus_io_probe]
           action: keep
@@ -201,10 +189,8 @@ data:
         - source_labels: [__meta_kubernetes_ingress_name]
           target_label: kubernetes_name
     - job_name: 'kubernetes-pods'
-
       kubernetes_sd_configs:
       - role: pod
-
       relabel_configs:
       - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
         action: keep

@@ -18,7 +18,7 @@ spec:
       serviceAccountName: prometheus-k8s
       containers:
       - name: prometheus
-        image: napnap75/rpi-prometheus:prometheus-2.1.0
+        image: napnap75/rpi-prometheus:prometheus-2.1.0  
         args:
           - '--storage.tsdb.retention=10d'
           - '--config.file=/etc/prometheus/prometheus.yaml'
@@ -30,8 +30,8 @@ spec:
             cpu: 500m
             memory: 512Mi
           limits:
-            cpu: 1000m
-            memory: 1024Mi
+            cpu: 2000m
+            memory: 600Mi
         volumeMounts:
         - name: config-volume
           mountPath: /etc/prometheus
